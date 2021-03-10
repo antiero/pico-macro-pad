@@ -2,6 +2,13 @@ class AbstractConfiguration:
 	# The name will be visible in the console
 	def getName():
 		return ""
+
+	def appName():
+		return ""
+
+	def shouldLaunch():
+		return False
+
 	# The color will colorize the button of the configuration and it's macros
 	def getColor():
 		return (0, 0, 0)
@@ -19,3 +26,6 @@ class AbstractMacro:
 	# Here you will implement the actions of your macro
 	def getMacro():
 		pass
+	# The color will colorize the button of the configuration and it's macros
+	def getColor():
+		return (255, 255, 255)		

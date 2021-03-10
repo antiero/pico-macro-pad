@@ -3,6 +3,7 @@ import board
 import busio
 
 from configurations import configurations_map
+from launch_helper import SpotlightLauncher
 
 from adafruit_bus_device.i2c_device import I2CDevice
 import adafruit_dotstar
@@ -79,14 +80,15 @@ def updateLeds():
 		
 	elif button_mode == ButtonMode.MACRO_CHOSER and last_button_mode != ButtonMode.MACRO_CHOSER:
 		last_button_mode = ButtonMode.MACRO_CHOSER
+		macros = configurations_map[chosen_configuration].getMacros()		
 		for i in range(16):
 			if chosen_configuration < len(configurations_map):
-				if i < min(len(configurations_map[chosen_configuration].getMacros()), 15):
-					pixels[i] = configurations_map[chosen_configuration].getColor()
+				if i < min(len(macros), 15):
+					pixels[i] = macros[i].getColor()
 				else: 
 					pixels[i] = (0, 0, 0)
 
-		pixels[15] = (255, 255, 255)
+		pixels[15] = (255, 0, 0)
 		
 # Read button press
 def readButton(delay):
@@ -104,6 +106,16 @@ def readButton(delay):
 					button_mode = ButtonMode.MACRO_CHOSER
 					logMacros()
 					time.sleep(delay)
+
+				if configurations_map[chosen_configuration].shouldLaunch():
+					appName = configurations_map[chosen_configuration].appName()
+					if len(appName)<=0:
+						break
+					try:
+						SpotlightLauncher(appName)
+					except Exception as err:
+						print(err)
+											
 			elif button_mode == ButtonMode.MACRO_CHOSER:
 				if not held[i]:
 					held[i] = 1

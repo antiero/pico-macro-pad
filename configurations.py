@@ -10,18 +10,45 @@ from adafruit_hid.keycode import Keycode
 keyboard = Keyboard(usb_hid.devices)
 layout = KeyboardLayoutUS(keyboard)
 
+
+
 ## CONFIGURATIONS ##
+
 
 class Terminal(AbstractConfiguration):
 	def getName():
 		return 'Terminal'
 	def getColor():
 		return (0, 255, 0)
+
+	def appName():
+		return 'Terminal.app'
+
+	def shouldLaunch():
+		return True
+
 	def getMacros():
 		return [
 			Ls, 
 			Pwd,
-			Home
+			Home,
+			LaunchTerminal,
+			DebugScreen
+		]
+
+class Logic(AbstractConfiguration):
+	def getName():
+		return 'Logic'
+	def getColor():
+		return (114, 75, 171)
+	def appName():
+		return 'Logic Pro.app'
+	def shouldLaunch():
+		return True		
+	def getMacros():
+		return [
+			SelectForward,
+			CreateMarker
 		]
 
 class GoogleMeet(AbstractConfiguration):
@@ -33,30 +60,6 @@ class GoogleMeet(AbstractConfiguration):
 		return [
 			ToggleMicrophone, 
 			ToggleWebcam
-		]
-
-class OBS(AbstractConfiguration):
-	def getName():
-		return 'OBS'
-	def getColor():
-		return (0, 0, 255)
-	def getMacros():
-		return [
-			SelectScene1, 
-			SelectScene2,
-			SelectScene3,
-			MuteOn,
-			MuteOff
-		]
-
-class Obsidian(AbstractConfiguration):
-	def getName():
-		return 'Obsidian'
-	def getColor():
-		return (51, 51, 255)
-	def getMacros():
-		return [
-			AddNewLog
 		]
 
 class Git(AbstractConfiguration):
@@ -71,87 +74,38 @@ class Git(AbstractConfiguration):
 			GitPush
 		]
 
-class RandomEstimation(AbstractConfiguration):
-	def getName():
-		return 'Random Esteem'
-	def getColor():
-		return (255, 0, 0)
-	def getMacros():
-		return [
-			OneWeekEsteem, 
-			OneMonthEsteem,
-			SixMonthsEsteem
-		]
-
-class PhpStorm(AbstractConfiguration):
-	def getName():
-		return 'PHPStorm'
-	def getColor():
-		return (232, 49, 123)
-	def getMacros():
-		return [
-			OpenInTerminal,
-			Rename,
-			ComposerAutoload,
-			ListenForDebug,
-			StepOver,
-			StepInto,
-			StepOut,
-			NextBreakpoint
-		]
-
 ## COMMANDS ##
 
-class OpenInTerminal(AbstractMacro):
+class LaunchTerminal(AbstractMacro):
 	def getMacroName():
-		return 'Open in terminal'
+		return 'Show Terminal'
 	def getMacro():
-		keyboard.send(Keycode.ALT, Keycode.T)
+		keyboard.send(Keycode.COMMAND, Keycode.SPACE)
+		layout.write("Terminal")
+		keyboard.send(Keycode.RETURN)
 
-class Rename(AbstractMacro):
+class DebugScreen(AbstractMacro):
 	def getMacroName():
-		return 'Rename'
+		return 'Connect Screen'
 	def getMacro():
-		keyboard.send(Keycode.SHIFT, Keycode.F6)
+		keyboard.send(Keycode.COMMAND, Keycode.SPACE)
+		layout.write("Terminal")
+		keyboard.send(Keycode.RETURN)
+		layout.write("screen /dev/tty.usbmodem143303 115200")
+		keyboard.send(Keycode.RETURN)		
 
-class ListenForDebug(AbstractMacro):
+# Logic Pro
+class SelectForward(AbstractMacro):
 	def getMacroName():
-		return 'Listen for debug'
+		return 'Select Forward'
 	def getMacro():
-		keyboard.send(Keycode.ALT, Keycode.D)
+		keyboard.send(Keycode.SHIFT, Keycode.F)
 
-class StepOver(AbstractMacro):
+class CreateMarker(AbstractMacro):
 	def getMacroName():
-		return 'Step over'
+		return 'Create Marker'
 	def getMacro():
-		keyboard.send(Keycode.F8)
-
-class StepInto(AbstractMacro):
-	def getMacroName():
-		return 'Step into'
-	def getMacro():
-		keyboard.send(Keycode.F7)
-
-class StepOut(AbstractMacro):
-	def getMacroName():
-		return 'Step out'
-	def getMacro():
-		keyboard.send(Keycode.SHIFT, Keycode.F8)
-
-class NextBreakpoint(AbstractMacro):
-	def getMacroName():
-		return 'Next breakpoint'
-	def getMacro():
-		keyboard.send(Keycode.ALT, Keycode.COMMAND, Keycode.R)
-
-class ComposerAutoload(AbstractMacro):
-	def getMacroName():
-		return 'Composer autoload'
-	def getMacro():
-		layout.write('composer dump')
-		keyboard.send(Keycode.KEYPAD_MINUS)
-		layout.write('autoload')
-		keyboard.send(Keycode.ENTER)
+		keyboard.send(Keycode.OPTION, Keycode.QUOTE)		
 
 class OneWeekEsteem(AbstractMacro):
 	def getMacroName():
@@ -159,21 +113,6 @@ class OneWeekEsteem(AbstractMacro):
 	def getMacro():
 		layout.write(str(random.randint(1, 5)))
 		keyboard.send(Keycode.ENTER)
-
-class OneMonthEsteem(AbstractMacro):
-	def getMacroName():
-		return '< 1 month'
-	def getMacro():
-		layout.write(str(random.randint(5, 20)))
-		keyboard.send(Keycode.ENTER)
-
-class SixMonthsEsteem(AbstractMacro):
-	def getMacroName():
-		return '< 6 months'
-	def getMacro():
-		layout.write(str(random.randint(20, 120)))
-		keyboard.send(Keycode.ENTER)
-		
 
 class Ls(AbstractMacro):
 	def getMacroName():
@@ -198,6 +137,7 @@ class Home(AbstractMacro):
 		layout.write("cd ")
 		keyboard.send(Keycode.ENTER)
 
+# Google Meet
 class ToggleMicrophone(AbstractMacro):
 	def getMacroName():
 		return 'Toggle Microphone'
@@ -210,48 +150,7 @@ class ToggleWebcam(AbstractMacro):
 	def getMacro():
 		keyboard.send(Keycode.COMMAND, Keycode.E)
 
-class SelectScene1(AbstractMacro):
-	def getMacroName():
-		return 'Scene 1'
-	def getMacro():
-		keyboard.send(Keycode.LEFT_ALT, Keycode.ONE)
-
-class SelectScene2(AbstractMacro):
-	def getMacroName():
-		return 'Scene 2'
-	def getMacro():
-		keyboard.send(Keycode.LEFT_ALT, Keycode.TWO)
-
-class SelectScene3(AbstractMacro):
-	def getMacroName():
-		return 'Scene 3'
-	def getMacro():
-		keyboard.send(Keycode.LEFT_ALT, Keycode.THREE)
-
-class MuteOn(AbstractMacro):
-	def getMacroName():
-		return 'Mute'
-	def getMacro():
-		keyboard.send(Keycode.LEFT_ALT, Keycode.FOUR)
-
-class MuteOff(AbstractMacro):
-	def getMacroName():
-		return 'Unmute'
-	def getMacro():
-		keyboard.send(Keycode.LEFT_ALT, Keycode.FIVE)
-
-class AddNewLog(AbstractMacro):
-	def getMacroName():
-		return 'New Log'
-	def getMacro():
-		keyboard.send(Keycode.COMMAND, Keycode.P)
-		layout.write("Insert template")
-		time.sleep(0.1)
-		keyboard.send(Keycode.ENTER)
-		layout.write("New log")
-		time.sleep(0.1)
-		keyboard.send(Keycode.ENTER)
-
+# Git
 class MergeDevelop(AbstractMacro):
 	def getMacroName():
 		return "Merge develop into master"
@@ -281,4 +180,5 @@ class GitPush(AbstractMacro):
 		
 
 # Map your configurations inside this array
-configurations_map = [Terminal, GoogleMeet, Obsidian, RandomEstimation, PhpStorm, Git ]	
+#configurations_map = [Terminal, GoogleMeet, Obsidian, RandomEstimation, PhpStorm, Git, Logic ]	
+configurations_map = [Terminal, Logic ]	
