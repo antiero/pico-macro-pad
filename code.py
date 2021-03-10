@@ -107,14 +107,15 @@ def readButton(delay):
 					logMacros()
 					time.sleep(delay)
 
-				if configurations_map[chosen_configuration].shouldLaunch():
-					appName = configurations_map[chosen_configuration].appName()
-					if len(appName)<=0:
-						break
-					try:
-						SpotlightLauncher(appName)
-					except Exception as err:
-						print(err)
+					# If Config specifies it, try and launch the App...
+					if configurations_map[chosen_configuration].shouldLaunch():
+						appName = configurations_map[chosen_configuration].appName()
+						if len(appName)<=0:
+							break
+						try:
+							SpotlightLauncher(appName)
+						except Exception as err:
+							print(err)
 											
 			elif button_mode == ButtonMode.MACRO_CHOSER:
 				if not held[i]:
