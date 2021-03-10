@@ -32,8 +32,6 @@ class Terminal(AbstractConfiguration):
 			Ls, 
 			Pwd,
 			Home,
-			LaunchTerminal,
-			DebugScreen
 		]
 
 class Logic(AbstractConfiguration):
@@ -74,25 +72,7 @@ class Git(AbstractConfiguration):
 			GitPush
 		]
 
-## COMMANDS ##
-
-class LaunchTerminal(AbstractMacro):
-	def getMacroName():
-		return 'Show Terminal'
-	def getMacro():
-		keyboard.send(Keycode.COMMAND, Keycode.SPACE)
-		layout.write("Terminal")
-		keyboard.send(Keycode.RETURN)
-
-class DebugScreen(AbstractMacro):
-	def getMacroName():
-		return 'Connect Screen'
-	def getMacro():
-		keyboard.send(Keycode.COMMAND, Keycode.SPACE)
-		layout.write("Terminal")
-		keyboard.send(Keycode.RETURN)
-		layout.write("screen /dev/tty.usbmodem143303 115200")
-		keyboard.send(Keycode.RETURN)		
+## COMMANDS ##	
 
 # Logic Pro
 class SelectForward(AbstractMacro):

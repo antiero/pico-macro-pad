@@ -99,15 +99,9 @@ def readButton(delay):
 	pressed = read_button_states(0, 16)
 	for i in range(16):
 		if pressed[i]:
-
 			if button_mode == ButtonMode.CONFIGURATION_CHOSER:
 				if i < len(configurations_map):
 					chosen_configuration = i
-					button_mode = ButtonMode.MACRO_CHOSER
-					logMacros()
-					time.sleep(delay)
-
-					# If Config specifies it, try and launch the App...
 					if configurations_map[chosen_configuration].shouldLaunch():
 						appName = configurations_map[chosen_configuration].appName()
 						if len(appName)<=0:
@@ -115,7 +109,12 @@ def readButton(delay):
 						try:
 							SpotlightLauncher(appName)
 						except Exception as err:
-							print(err)
+							print(err)					
+					button_mode = ButtonMode.MACRO_CHOSER
+					logMacros()
+					time.sleep(delay)
+
+
 											
 			elif button_mode == ButtonMode.MACRO_CHOSER:
 				if not held[i]:
